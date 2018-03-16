@@ -25,7 +25,7 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
 ## Steps
 
 1.  Create new .cpp & .h files in `revlanguage/distributions/math/`, named `Dist_betabinomial.cpp` and `Dist_betaBinomial.h`. 
-     **Note:** all files in this directory will follow this naming format: 'Dist_[nameofdistribution].cpp/h'
+     **Note:** all files in this directory will follow this naming format: 'Dist_(nameofdistribution).cpp/h'
 
     To populate these files, look at existing examples of similar distributions for specific info on what to include & on proper syntax.  For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.
     
@@ -36,13 +36,13 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
 2.  Test
     1.  Create new `.cpp` & `.h` files in `core/distributions/math/`, named `BetaBinomialDistribution.cpp` and `BetaBinomialDistribution.h`.
 
-        **Note:** This is the object oriented wrapper code, that references the functions hard-coded in the next step. All files in this directory will follow this naming format: '<NameOfDistribution>Distribution.cpp/h'
+        **Note:** This is the object oriented wrapper code, that references the functions hard-coded in the next step. All files in this directory will follow this naming format: '(NameOfDistribution)Distribution.cpp/h'
     
     2.  Create new .cpp and .h files in `core/math/Distributions/`, named `DistributionBetaBinomial.cpp` and `DistributionBetaBinomial.h`. 
 
         These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.
 
-        **Note:** This is the most time-consuming step in the entire process of implementing a new distribution. All files in this directory will follow this naming format: 'Distribution<NameOfDistribution>.cpp/h'
+        **Note:** This is the most time-consuming step in the entire process of implementing a new distribution. All files in this directory will follow this naming format: 'Distribution(NameOfDistribution).cpp/h'
 
 
 3.  Navigate to `revlanguage/workspace/RbRegister_Dist.cpp` 
