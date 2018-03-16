@@ -25,12 +25,12 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
 ## Steps
 
 1.  Create new .cpp & .h files in `revlanguage/distributions/math/`, named `Dist_betabinomial.cpp` and `Dist_betaBinomial.h`. 
-     **Note:** all files in this directory will follow this naming format: 'Dist_<nameofdistribution>.cpp/h'
+     **Note:** all files in this directory will follow this naming format: 'Dist_[nameofdistribution].cpp/h'
 
     To populate these files, look at existing examples of similar distributions for specific info on what to include & on proper syntax.  For example, for the Beta Binomial distribution, I looked to the existing Binomial Distribution code for guidance.
     
 ```cpp 
-//add code here
+
 ```
 
 2.  Test
