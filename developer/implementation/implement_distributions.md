@@ -480,6 +480,6 @@ namespace RevBayesCore {
  4. Before pushing your changes, you should ensure your code is working properly. 
 
     There are multiple ways to test your code, so use your best judgment. You should first compile your code to ensure there are no errors (e.g. if you're using the Eclipse IDE, select 'Project' and then 'Build Project'. Once it compiles with no errors/warnings, you can test it in various ways (e.g. run each individual function within the new Beta Binomial distribution in R, then run the Binomial distribution with a Beta prior in Rev and see if the output matches). 
-    For more specific information on testing, see the {% page_ref testing/validation !! ADD THIS %} section of this Developer's Guide.
+    For more specific information on testing, see the (% page_ref testing/validation !! ADD THIS %) section of this Developer's Guide.
     
  5. After ensuring your code runs properly, you are ready to add it to the RevBayes git repo. You should fork your own copy of the repo, and contribute via a pull request. We also recommend reading through the {% page_ref git-flow %} section of the Developer's guide. Now, you are ready to push :octocat: !
