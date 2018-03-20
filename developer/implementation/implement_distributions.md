@@ -1,7 +1,7 @@
 ---
 title: Implementing a distribution
 category: implementation
-order: 1
+order: 0
 ---
 
 ## General info before getting started
