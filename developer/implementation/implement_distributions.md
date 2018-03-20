@@ -459,17 +459,18 @@ namespace RevBayesCore {
 
    For the Beta Binomial distribution, we navigate to the section in the file with the header 'Distributions' and then look for the sub-header dealing with 'math distributions'. Then, add the following line of code:
 
-    ```cpp
-    #include "Dist_betaBinomial.h"
-    ```
+
+ ```cpp
+ #include "Dist_betaBinomial.h"
+ ```
 
    This step registers the header file for the beta binomial distribution, effectively adding it to RevBayes.
 
    Next, navigate to the section of the file that initializes the global workspace. This section defines the workspace class, which houses info on all distributions. Then, add the following line of code: 
 
-    ```cpp
-    AddDistribution< Natural		>( new Dist_betaBinomial());
-    ```
+ ```cpp
+ AddDistribution< Natural		>( new Dist_betaBinomial());
+ ```
 
    This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the revlanguage.
     
