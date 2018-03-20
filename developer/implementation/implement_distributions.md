@@ -6,6 +6,8 @@ order: 1
 
 ## General info before getting started
 
+* RevBayes is written in C++, so you will need to be somewhat familiar with C++ syntax when implementing in RevBayes.   
+
 * Within the RevBayes **core** directory, there are subdirectories for different categories of distributions. 
 All mathematical distributions that have been implemented exist in `core/distributions/math`.
 
@@ -33,274 +35,421 @@ In the following steps, we'll implement the **Beta Binomial Distribution** as an
     The Dist_betabinomial.cpp file for this distribution will look like this:
     
 ```cpp 
-#include "ArgumentRule.h"
-#include "ArgumentRules.h"
-#include "BetaBinomialDistribution.h"
-#include "ContinuousStochasticNode.h"
-#include "Dist_betaBinomial.h"  //don't forget to edit/populate the header file
-#include "Probability.h"
-#include "RealPos.h"
-#include "RbException.h"
-#include "DistributionBetaBinomial.h"
-#include "RbHelpReference.h"
-
-using namespace RevLanguage;
-
-Dist_betaBinomial::Dist_betaBinomial(void) : TypedDistribution<Natural>()
-{
-
-}
-
-
-Dist_betaBinomial::~Dist_betaBinomial(void)
-{
-
-}
-
-
-
-Dist_betaBinomial* Dist_betaBinomial::clone( void ) const
-{
-
-    return new Dist_betaBinomial(*this);
-}
-
-
-RevBayesCore::BetaBinomialDistribution* Dist_betaBinomial::createDistribution( void ) const
-{
-
-    // get the parameters
-    RevBayesCore::TypedDagNode<long>*    vn = static_cast<const Natural     &>( n->getRevObject() ).getDagNode();
-    RevBayesCore::TypedDagNode<double>* vp = static_cast<const Probability &>( p->getRevObject() ).getDagNode();
-    RevBayesCore::TypedDagNode<long>* va = static_cast<const Natural &>( a->getRevObject() ).getDagNode();
-    RevBayesCore::TypedDagNode<long>* vb = static_cast<const Natural &>( b->getRevObject() ).getDagNode();
-    RevBayesCore::BetaBinomialDistribution* d  = new RevBayesCore::BetaBinomialDistribution( vn, vp, va, vb );
-    return d;
-}
-
-
-
-/* Get Rev type of object */
-const std::string& Dist_betaBinomial::getClassType(void)
-{
-
-    static std::string rev_type = "Dist_betaBinomial";
-	return rev_type;
-}
-
-/* Get class type spec describing type of object */
-const TypeSpec& Dist_betaBinomial::getClassTypeSpec(void)
-{
-
-    static TypeSpec rev_type_spec = TypeSpec( getClassType(), new TypeSpec( Distribution::getClassTypeSpec() ) );
-	return rev_type_spec;
-}
-
-
-/**
- * Get the Rev name for the distribution.
- * This name is used for the constructor and the distribution functions,
- * such as the density and random value function
- *
- * \return Rev name of constructor function.
- */
-std::string Dist_betaBinomial::getDistributionFunctionName( void ) const
-{
-    // create a distribution name variable that is the same for all instance of this class
-    std::string d_name = "betaBinomial";
-
-    return d_name;
-}
-
-
-/**
- * Get the author(s) of this function so they can receive credit (and blame) for it.
- */
-std::vector<std::string> Dist_betaBinomial::getHelpAuthor(void) const
-{
-    // create a vector of authors for this function
-    std::vector<std::string> authors;
-    authors.push_back( "Sebastian Hoehna" );
-
-    return authors;
-}
-
-
-/**
- * Get the (brief) description for this function
- */
-std::vector<std::string> Dist_betaBinomial::getHelpDescription(void) const
-{
-    // create a variable for the description of the function
-    std::vector<std::string> descriptions;
-    descriptions.push_back( "Beta Binomial probability distribution of x successes in n trials." );
-
-    return descriptions;
-}
-
-
-/**
- * Get the more detailed description of the function
- */
-std::vector<std::string> Dist_betaBinomial::getHelpDetails(void) const
-{
-    // create a variable for the description of the function
-    std::vector<std::string> details;
-
-    std::string details_1 = "";
-    details_1 += "The binomial probability distribution defines the number of success in n trials,";
-    details_1 += "where each trial has the same success probability p. The probability is given by";
-    details_1 += "(n choose x) p^(x) * (1-p)^(n-p)";
-
-    details.push_back( details_1 );
-
-    return details;
-}
-
-
-/**
- * Get an executable and instructive example.
- * These example should help the users to show how this function works but
- * are also used to test if this function still works.
- */
-std::string Dist_betaBinomial::getHelpExample(void) const 
-{
-    // create an example as a single string variable.
-    std::string example = "";
-
-    example += "p ~ dnBeta(1.0,1.0)\n";
-    example += "x ~ dnBinomial(n=10,p)\n";
-    example += "x.clamp(8)\n";
-    example += "moves[1] = mvSlide(p, delta=0.1, weight=1.0)\n";
-    example += "monitors[1] = screenmonitor(printgen=1000, separator = \"\t\", x)\n";
-    example += "mymodel = model(p)\n";
-    example += "mymcmc = mcmc(mymodel, monitors, moves)\n";
-    example += "mymcmc.burnin(generations=20000,tuningInterval=100)\n";
-    example += "mymcmc.run(generations=200000)\n";
-
-    return example;
-}
-
-
-/**
- * Get some references/citations for this function
- *
- */
-std::vector<RevBayesCore::RbHelpReference> Dist_betaBinomial::getHelpReferences(void) const
-{
-    // create an entry for each reference
-    std::vector<RevBayesCore::RbHelpReference> references;
-
-
-    return references;
-}
-
-
-/**
- * Get the names of similar and suggested other functions
- */
-std::vector<std::string> Dist_betaBinomial::getHelpSeeAlso(void) const
-{
-    // create an entry for each suggested function
-    std::vector<std::string> see_also;
-    see_also.push_back( "dnBernoulli" );
-
-
-    return see_also;
-}
-
-
-/**
- * Get the title of this help entry
- */
-std::string Dist_betaBinomial::getHelpTitle(void) const
-{
-    // create a title variable
-    std::string title = "Beta Binomial Distribution";
-
-    return title;
-}
-
-
-/** Return member rules (no members) */
-const MemberRules& Dist_betaBinomial::getParameterRules(void) const
-{
-
-    static MemberRules dist_member_rules;
-    static bool rules_set = false;
-
-    if ( !rules_set )
-    {
-        dist_member_rules.push_back( new ArgumentRule( "p", Probability::getClassTypeSpec(), "Probability of success.", ArgumentRule::BY_CONSTANT_REFERENCE, ArgumentRule::ANY ) );
-        dist_member_rules.push_back( new ArgumentRule( "n", Natural::getClassTypeSpec()    , "Number of trials.", ArgumentRule::BY_CONSTANT_REFERENCE, ArgumentRule::ANY ) );
-        rules_set = true;
-    }
-
-    return dist_member_rules;
-}
-
-
-const TypeSpec& Dist_betaBinomial::getTypeSpec( void ) const
-{
-
-    static TypeSpec ts = getClassTypeSpec();
-    return ts;
-}
-
-
-/** Print value for user */
-void Dist_betaBinomial::printValue(std::ostream& o) const
-{
-
-    o << "BetaBinomial(p=";
-    if ( p != NULL )
-    {
-        o << p->getName();
-    }
-    else
-    {
-        o << "?";
-    }
-    o << ", n=";
-    if ( n != NULL )
-        o << n->getName();
-    else
-        o << "?";
-    o << ")";
-}
-
-
-/** Set a member variable */
-void Dist_betaBinomial::setConstParameter(const std::string& name, const RevPtr<const RevVariable> &var)
-{
-
-    if ( name == "p" )
-    {
-        p = var;
-    }
-    else if ( name == "n" )
-    {
-        n = var;
-    }
-    else
-    {
-        TypedDistribution<Natural>::setConstParameter(name, var);
-    }
-}
 
 ```
+   The Dist_betaBinomial.h file (that references the code written in Dist_betaBinomial.cpp) looks like this:
+   
+```cpp
+#ifndef REVLANGUAGE_DISTRIBUTIONS_MATH_DIST_BETABINOMIAL_H_
+#define REVLANGUAGE_DISTRIBUTIONS_MATH_DIST_BETABINOMIAL_H_
 
-2. Create new `.cpp` & `.h` files in `core/distributions/math/`, named `BetaBinomialDistribution.cpp` and `BetaBinomialDistribution.h`.
-This is the object oriented wrapper code, that references the functions hard-coded in the next step. 
+#endif /* REVLANGUAGE_DISTRIBUTIONS_MATH_DIST_BETABINOMIAL_H_ */
+
+#ifndef Dist_betaBinomial_H
+#define Dist_betaBinomial_H
+
+#include "BetaBinomialDistribution.h"
+#include "BetaDistribution.h"
+#include "BetaBinomialDistribution.h"
+#include "Natural.h"
+#include "Probability.h"
+#include "RlTypedDistribution.h"
+
+namespace RevLanguage {
+
+    /**
+     * The RevLanguage wrapper of the beta-binomial distribution.
+     *
+     * The RevLanguage wrapper of the beta-binomial distribution simply
+     * manages the interactions through the Rev with our core.
+     * That is, the internal distribution object can be constructed and hooked up
+     * in a model graph.
+     * See the BetaBinomialDistribution for more details.
+     *
+     *
+     * @copyright Copyright 2009-
+     * @author The RevBayes Development Core Team (JK, WD, WP)
+     * @since 2014-08-25, version 1.0
+     *
+     */
+    class Dist_betaBinomial :  public TypedDistribution<Natural> {
+
+    public:
+                                                        Dist_betaBinomial(void);
+        virtual                                        ~Dist_betaBinomial(void);
+
+        // Basic utility functions
+        Dist_betaBinomial*                                  clone(void) const;                                                                      //!< Clone the object
+        static const std::string&                       getClassType(void);                                                                     //!< Get Rev type
+        static const TypeSpec&                          getClassTypeSpec(void);                                                                 //!< Get class type spec
+        std::string                                     getDistributionFunctionName(void) const;                                                //!< Get the Rev-name for this distribution.
+        const TypeSpec&                                 getTypeSpec(void) const;                                                                //!< Get the type spec of the instance
+        const MemberRules&                              getParameterRules(void) const;                                                          //!< Get member rules (const)
+        void                                            printValue(std::ostream& o) const;                                                      //!< Print the general information on the function ('usage')
+
+        // Distribution functions you have to override
+        RevBayesCore::BetaBinomialDistribution*             createDistribution(void) const;
+
+    protected:
+
+        std::vector<std::string>                        getHelpAuthor(void) const;                                                              //!< Get the author(s) of this function
+        std::vector<std::string>                        getHelpDescription(void) const;                                                         //!< Get the description for this function
+        std::vector<std::string>                        getHelpDetails(void) const;                                                             //!< Get the more detailed description of the function
+        std::string                                     getHelpExample(void) const;                                                             //!< Get an executable and instructive example
+        std::vector<RevBayesCore::RbHelpReference>      getHelpReferences(void) const;                                                          //!< Get some references/citations for this function
+        std::vector<std::string>                        getHelpSeeAlso(void) const;                                                             //!< Get suggested other functions
+        std::string                                     getHelpTitle(void) const;                                                               //!< Get the title of this help entry
+
+        void                                            setConstParameter(const std::string& name, const RevPtr<const RevVariable> &var);       //!< Set member variable
+
+    private:
+
+        RevPtr<const RevVariable>                       p;
+        RevPtr<const RevVariable>                       n;
+        RevPtr<const RevVariable>					   a;
+        RevPtr<const RevVariable>					   b;
+    };
+
+}
+
+#endif
+```
+
+2. a. Create new `.cpp` & `.h` files in `core/distributions/math/`, named `BetaBinomialDistribution.cpp` and `BetaBinomialDistribution.h`.
+This is the object oriented wrapper code, that references the functions hard-coded in the next step (step 2b). 
 
    **Note:** All files in this directory will follow this naming format: '(NameOfDistribution)Distribution.cpp/h'
+   
+   The BetaBinomialDistribution.cpp file will look like this:
+   
+```cpp
+#include "BetaBinomialDistribution.h"
+#include "DistributionBetaBinomial.h"
+#include "RandomNumberFactory.h"
+#include "RbConstants.h"
+#include "RbException.h"
+
+using namespace RevBayesCore;
+
+BetaBinomialDistribution::BetaBinomialDistribution(const TypedDagNode<long> *m, const TypedDagNode<double> *alpha, const TypedDagNode<double> *beta) : TypedDistribution<long>( new long( 0 ) ),
+    n( m ),
+	a( alpha ),
+	b( beta )
+{
+
+    // add the parameters to our set (in the base class)
+    // in that way other class can easily access the set of our parameters
+    // this will also ensure that the parameters are not getting deleted before we do
+    addParameter( n );
+    addParameter( a );
+    addParameter( b );
+
+    *value = RbStatistics::BetaBinomial::rv(n->getValue(), alpha->getValue(), beta->getValue(), *GLOBAL_RNG);
+}
+
+
+BetaBinomialDistribution::~BetaBinomialDistribution(void) {
+
+    // We don't delete the parameters, because they might be used somewhere else too. The model needs to do that!
+}
+
+
+BetaBinomialDistribution* BetaBinomialDistribution::clone( void ) const {
+
+    return new BetaBinomialDistribution( *this );
+}
+
+
+double BetaBinomialDistribution::computeLnProbability( void )
+{
+
+    // check that the value is inside the boundaries
+    if ( *value > n->getValue() || *value < 0 )
+    {
+        return RbConstants::Double::neginf;
+    }
+
+    return RbStatistics::BetaBinomial::lnPdf(n->getValue(), a->getValue(), b->getValue(), *value);
+}
+
+void BetaBinomialDistribution::redrawValue( void ) {
+
+    *value = RbStatistics::BetaBinomial::rv(n->getValue(), a->getValue(), b->getValue(), *GLOBAL_RNG);
+}
+
+
+/** Swap a parameter of the distribution */
+void BetaBinomialDistribution::swapParameterInternal(const DagNode *oldP, const DagNode *newP)
+{
+
+    if (oldP == a)
+    {
+        a = static_cast<const TypedDagNode<double>* >( newP );
+    }
+    else if (oldP == b)
+    {
+        b = static_cast<const TypedDagNode<double>* >( newP );
+    }
+    else if (oldP == n)
+    {
+        n = static_cast<const TypedDagNode<long>* >( newP );
+    }
+
+}
+```
+  and the BetaBinomialDistribution.h file will look like:
+  
+```cpp
+#ifndef CORE_DISTRIBUTIONS_MATH_BETABINOMIALDISTRIBUTION_H_
+#define CORE_DISTRIBUTIONS_MATH_BETABINOMIALDISTRIBUTION_H_
+
+#endif /* CORE_DISTRIBUTIONS_MATH_BETABINOMIALDISTRIBUTION_H_ */
+
+#ifndef BetaBinomialDistribution_H
+#define BetaBinomialDistribution_H
+
+#include "TypedDagNode.h"
+#include "TypedDistribution.h"
+
+namespace RevBayesCore {
+
+    /**
+     * @brief Beta-Binomial distribution class.
+     *
+     * The Binomial distribution represents a family of distributions defined
+     * on the natural number. The Beta-Binomial distribution has 2 parameters:
+     *   n .. the number of trials
+     *   p .. the probability of success
+     * Instances of this class can be associated to stochastic variables.
+     *
+     * @copyright Copyright 2009-
+     * @author The RevBayes Development Core Team (JK, WD, WP)
+     * @since 2013-04-12, version 1.0
+     *
+     */
+    class BetaBinomialDistribution : public TypedDistribution<long> {
+
+    public:
+        BetaBinomialDistribution(const TypedDagNode<long> *n, const TypedDagNode<double> *alpha, const TypedDagNode<double> *beta);
+        virtual                                            ~BetaBinomialDistribution(void);                                             //!< Virtual destructor
+
+        // public member functions
+        BetaBinomialDistribution*                               clone(void) const;                                                      //!< Create an independent clone
+        double                                              computeLnProbability(void);
+        void                                                redrawValue(void);
+
+    protected:
+        // Parameter management functions
+        void                                                swapParameterInternal(const DagNode *oldP, const DagNode *newP);        //!< Swap a parameter
+
+    private:
+
+        // members
+        const TypedDagNode<long>*                            n;
+        const TypedDagNode<double>*							a;
+        const TypedDagNode<double>*							b;
+
+    };
+
+}
+
+#endif
+```
+
+2. b. Create new .cpp and .h files in `core/math/Distributions/`, named `DistributionBetaBinomial.cpp` and `DistributionBetaBinomial.h`. 
+
+      These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax. Also, you will need to work out the math for your respective distribution, in order to properly define its procedural functions. 
+
+      **Note:** This is the most time-consuming step in the entire process of implementing a new distribution. All files in this directory will follow this naming format: 'Distribution(NameOfDistribution).cpp/h'
+      
+      The DistributionBetaBinomial.cpp file will look like this:
+      
+```cpp
+#include <cmath>
+#include "DistributionBeta.h"
+#include "DistributionBinomial.h"
+#include "DistributionNormal.h"
+#include "RbConstants.h"
+#include "RbException.h"
+#include "RbMathFunctions.h"
+#include "RbMathCombinatorialFunctions.h"
+#include "RbMathHelper.h"
+#include "RbMathLogic.h"
+#include "DistributionBetaBinomial.h"
+
+using namespace RevBayesCore;
+
+/*!
+ * This function calculates the probability density 
+ * for a beta-binomially-distributed random variable.
+ * The beta-binomial distribution is the binomial distribution
+ * in which the probability of successes at each trial is random,
+ * and follows a beta distribution.
+ *
+ * \brief Beta Binomial probability density.
+ * \param n is the number of trials. 
+ * \param p is the success probability. 
+ * \param x is the number of successes. 
+ * \return Returns the probability density.
+ * \throws Does not throw an error.
+ */
+double RbStatistics::BetaBinomial::cdf(double n, double a, double b, double x)
+{
+	throw RbException("The Beta Binomial cdf is not yet implemented in RB.");
+}
+
+/*!
+ * This function draws a random variable
+ * from a beta-binomial distribution.
+ *
+ * From R:
+ *
+ *     (1) pdf() has both p and q arguments, when one may be represented
+ *         more accurately than the other (in particular, in df()).
+ *     (2) pdf() does NOT check that inputs x and n are integers. This
+ *         should be done in the calling function, where necessary.
+ *         -- but is not the case at all when called e.g., from df() or dbeta() !
+ *     (3) Also does not check for 0 <= p <= 1 and 0 <= q <= 1 or NaN's.
+ *         Do this in the calling function.
+ *
+ *  REFERENCE
+ *
+ *	Kachitvichyanukul, V. and Schmeiser, B. W. (1988).
+ *	Binomial random variate generation.
+ *	Communications of the ACM 31, 216-222.
+ *	(Algorithm BTPEC).
+ *
+ *
+ * \brief Beta-Binomial probability density.
+ * \param n is the number of trials.
+ * \param pp is the success probability.
+ * \param a is the number of successes. ????
+ * \param b is the ????
+ * \return Returns the probability density.
+ * \throws Does not throw an error.
+ */
+
+
+int RbStatistics::BetaBinomial::rv(double n, double a, double b, RevBayesCore::RandomNumberGenerator &rng)
+{
+	int y;
+
+	double p = RbStatistics::Beta::rv(a,b,rng);
+	y = RbStatistics::Binomial::rv(n,p,rng);
+	return y;
+}
+
+/*!
+ * This function calculates the probability density 
+ * for a beta-binomially-distributed random variable.
+ *
+ * \brief Beta-Binomial probability density.
+ * \param n is the number of trials. 
+ * \param p is the success probability. 
+ * \param x is the number of successes. 
+ * \return Returns the probability density.
+ * \throws Does not throw an error.
+ */
+double RbStatistics::BetaBinomial::lnPdf(double n, double a, double b, double value) {
+
+    return pdf(value, n, a, b, true);
+}
+
+/*!
+ * This function calculates the probability density 
+ * for a beta-binomially-distributed random variable.
+ *
+ * \brief Beta-Binomial probability density.
+ * \param n is the number of trials. 
+ * \param y is the number of successes.
+ * \param a is the alpha parameter for the beta distribution
+ * \param b is the beta parameter for the beta distribution
+ * \return Returns the probability density.
+ * \throws Does not throw an error.
+ */
+
+
+double RbStatistics::BetaBinomial::pdf(double y, double n, double a, double b, bool asLog)
+{
+
+    double constant;
+    if (a==0)
+    		return((y == 0) ? (asLog ? 0.0 : 1.0) : (asLog ? RbConstants::Double::neginf : 0.0) );
+    		//return constant;
+
+    if (b==0)
+    		return((y == n) ? (asLog ? 0.0 : 1.0) : (asLog ? RbConstants::Double::neginf : 0.0) );
+    		//return constant;
+
+    constant = RevBayesCore::RbMath::lnChoose(n, y);
+
+
+    	double prUnnorm = constant + RbStatistics::Beta::lnPdf(a, b, y);
+    	double prNormed = prUnnorm - RbStatistics::Beta::lnPdf(a, b, y);
+
+    	if(asLog == false)
+    		return exp(prNormed);
+    	else
+    		return prNormed;
+}
+
+
+/*!
+ * This function calculates the probability density 
+ * for a beta-binomially-distributed random variable.
+ *
+ * From R:
+ *
+ *     (1) pdf() has both p and q arguments, when one may be represented
+ *         more accurately than the other (in particular, in df()).
+ *     (2) pdf() does NOT check that inputs x and n are integers. This
+ *         should be done in the calling function, where necessary.
+ *         -- but is not the case at all when called e.g., from df() or dbeta() !
+ *     (3) Also does not check for 0 <= p <= 1 and 0 <= q <= 1 or NaN's.
+ *         Do this in the calling function.
+ *
+ * \brief Beta Binomial probability density.
+ * \param n is the number of trials. 
+ * \param a is the alpha parameter.
+ * \param b is the beta parameter.
+ * \return Returns the probability density.
+ * \throws Does not throw an error.
+ */
+
+//double RbStatistics::BetaBinomial::quantile(double quantile_prob, double n, double p)
+double quantile(double quantile_prob, double n, double a, double b)
+{
+	throw RbException("There is no simple formula for this, and it is not yet implemented in RB.");
+}
+```
+ The DistributionBetaBinomial.h file will look like this:
+ 
+```cpp
+
+#ifndef DistributionBetaBinomial_H
+#define DistributionBetaBinomial_H
+
+namespace RevBayesCore {
+
+    class RandomNumberGenerator;
+
+    namespace RbStatistics {
     
-    2.  Create new .cpp and .h files in `core/math/Distributions/`, named `DistributionBetaBinomial.cpp` and `DistributionBetaBinomial.h`. 
+        namespace BetaBinomial {
+        
+            double                      pdf(double y, double n, double a, double b, bool log);     /*!< Beta Binomial probability density */
+            double                      lnPdf(double n, double a, double b, double y);                       /*!< Beta Binomial log_e probability density */
+            double                      cdf(double n, double a, double b, double x);                                    /*!< Beta Binomial cumulative probability */
+            double                      quantile(double p, double n, double a, double b);                               		    /*!< Beta Binomial(n,p) quantile */
+            int                         rv(double n, double a, double b, RandomNumberGenerator& rng);             /*!< Beta Binomial random variable */
+	
+            double                      do_search(double y, double *z, double a, double b, double n, double pr, double incr); // ?????
+        }
+    }
+}
 
-        These are the raw procedural functions in the RevBayes namespace (e.g. pdf, cdf, quantile); they are not derived functions. RbStatistics is a namespace. To populate these files, look at existing examples of similar distributions to get an idea of what functions to include, what variables are needed, and the proper syntax.
-
-        **Note:** This is the most time-consuming step in the entire process of implementing a new distribution. All files in this directory will follow this naming format: 'Distribution(NameOfDistribution).cpp/h'
-
+#endif
+```
 
 3.  Navigate to `revlanguage/workspace/RbRegister_Dist.cpp` 
 
@@ -321,7 +470,6 @@ This is the object oriented wrapper code, that references the functions hard-cod
     ```cpp
     AddDistribution< Natural		>( new Dist_betaBinomial());
     ```
-
 
     This adds the distribution to the workspace. Without this step, the beta binomial distribution will not be added to the revlanguage.
     
