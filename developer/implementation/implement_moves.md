@@ -1,7 +1,7 @@
 ---
 title: Implementing a Metropolis-Hastings Move
 category: implementation
-order: 2
+order: 3
 ---
 
 ## General info before getting started
