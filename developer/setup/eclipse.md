@@ -18,6 +18,8 @@ If you already have Eclipse installed you can go to *Help > Install New Software
 
 > **Important!** When you first open Eclipse, you will be asked to choose a location for your workspace. Make sure to choose a location that is not inside the source directory of your project!
 
+>**Helpful tip:** When you open Eclipse, you will see a 'Welcome' window that shows various options. You can select the option to 'not show this window' when opening Eclipse. This is a useful option, as the Welcome window can be distracting/confusing when working on a new project. Alternately, each time you open Eclipse, you can manually exit the Welcome window and you'll then be able to see your project.
+
 Create an Eclipse project for RevBayes
 -----------------------------
 Assuming you have cloned the RevBayes github repository into the directory `<revbayes-repo>`, you can create a new C++ Eclipse project as follows:
@@ -41,6 +43,7 @@ If you installed the CMake command line tools in the default location `/usr/loca
 2. Go to *Project > Properties*, or right click on the project name and select *Properties*.
 3. Expand *C/C++ Build* and click on *Environment*
 4. Click on the PATH entry, click *Edit...* and add `/usr/local/bin` to the end of the *Value*
+*Note: Make sure there is a colon in the path, before `/usr/local/bin`*
 ![eclipse-path](figures/eclipse-path.png "PATH Configuration")
 
 ### Configure the C/C++ build settings
@@ -93,3 +96,4 @@ Tips
 
 	`sudo ln -s <revbayes-repo>/projects/cmake/rb /usr/local/bin/rb`
 - If your *Project Explorer* or *Console* views disappear and you can't find them, go to *Window > Show View* to display various views.
+
