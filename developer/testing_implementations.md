@@ -1,4 +1,4 @@
-Guidelines for testing new implementations in RevBayes
+#Guidelines for testing new implementations in RevBayes
 
 Overall rules/guidelines for testing: 
 
